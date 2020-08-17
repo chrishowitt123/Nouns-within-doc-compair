@@ -77,7 +77,7 @@ data_tuples = list(zip(x_list,y_list,score))
 results = pd.DataFrame(data_tuples, columns=['X','Y', 'Score'])  
 results = results.sort_values(by=['Score'], ascending=False)
 results = results[results['Score'] > 70]
-results.to_csv('nounsSim.csv')
+results.to_csv('NounsSim.csv')
 
 
 # In[ ]:
