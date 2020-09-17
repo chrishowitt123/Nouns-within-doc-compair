@@ -1,11 +1,9 @@
-
 import docx2txt
 from collections import Counter
 import pandas as pd
 from textblob import TextBlob
 import itertools
 from rapidfuzz import fuzz
-from rapidfuzz import process
 from termcolor import colored
 from tkinter import filedialog
 
