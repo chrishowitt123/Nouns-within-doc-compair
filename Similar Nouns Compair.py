@@ -10,7 +10,7 @@ from termcolor import colored
 from tkinter import filedialog
 
 print( "\n")  
-print("Welcome to NounSim!")
+print("Welcome toy NounSim!")
 print( "\n")  
 print("""     ______ ______
     _/      Y      \_
@@ -56,38 +56,6 @@ for n, v in orderedNouns:
 
 orderedNouns = pd.DataFrame(list(zip(nouns, values)),
               columns=['Nouns','Score'])
-
-x_list = []
-y_list = []
-score = []
-
-
-for x,y in itertools.combinations(nouns, 2):
-    fuzz.ratio(x, y)
-    score.append(fuzz.ratio(x, y))
-    x_list.append(x)
-    y_list.append(y)
-    
-data_tuples = list(zip(x_list,y_list,score))
-
-results = pd.DataFrame(data_tuples, columns=['X','Y', 'Score'])  
-results = results.sort_values(by=['Score'], ascending=False)
-results = results[results['Score'] > 70]
-results.to_csv('nounsSim.csv')
-
-
-# In[23]:
-
-
-orderedNouns
-
-
-# In[26]:
-
-
-import itertools
-from rapidfuzz import fuzz
-from rapidfuzz import process
 
 x_list = []
 y_list = []
