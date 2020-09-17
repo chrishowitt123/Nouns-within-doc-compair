@@ -1,17 +1,16 @@
-
 import docx2txt
-from collections import Counter
-import pandas as pd
-from textblob import TextBlob
 import itertools
+import pandas as pd
+import re
 from rapidfuzz import fuzz
-from rapidfuzz import process
+from nltk.tokenize import PunktSentenceTokenizer
 from termcolor import colored
 import tkinter as tk
 from tkinter import filedialog
 
+
 print( "\n")  
-print("Welcome to NounSim!")
+print("Welcome to SentSim!")
 print( "\n")  
 print("""     ______ ______
     _/      Y      \_
@@ -41,74 +40,48 @@ print( "\n")
 print( "\n")  
 print( "\n")  
 print( "\n")   
-    
-text =  docx2txt.process(file)
-blob = TextBlob(text)    
-nouns = blob.noun_phrases
-orderedNouns = Counter(nouns).most_common()
 
-nouns = []
-values= []
-
-
-for n, v in orderedNouns:
-    nouns.append(n)
-    values.append(v)
-
-orderedNouns = pd.DataFrame(list(zip(nouns, values)),
-              columns=['Nouns','Score'])
+text = docx2txt.process(file)
+sent_tokenizer = PunktSentenceTokenizer(text)
+sents = sent_tokenizer.tokenize(text)
+sents = set(sents)
 
 x_list = []
 y_list = []
 score = []
 
-
-for x,y in itertools.combinations(nouns, 2):
+for x,y in itertools.combinations(sents, 2):
     fuzz.ratio(x, y)
     score.append(fuzz.ratio(x, y))
     x_list.append(x)
     y_list.append(y)
     
-data_tuples = list(zip(x_list,y_list,score))
+# remove consecutive blank lines
 
-results = pd.DataFrame(data_tuples, columns=['X','Y', 'Score'])  
-results = results.sort_values(by=['Score'], ascending=False)
-results = results[results['Score'] > 70]
-results.to_csv('nounsSim.csv')
+x_list1 = []  
+for x in x_list:
 
-
-# In[23]:
-
-
-orderedNouns
-
-
-# In[26]:
-
-
-import itertools
-from rapidfuzz import fuzz
-from rapidfuzz import process
-
-x_list = []
-y_list = []
-score = []
-
-
-for x,y in itertools.combinations(nouns, 2):
-    fuzz.ratio(x, y)
-    score.append(fuzz.ratio(x, y))
-    x_list.append(x)
-    y_list.append(y)
+    xn = re.sub(r'\n\s*\n', '\n\n', x)
+    x_list1.append(xn)
     
-data_tuples = list(zip(x_list,y_list,score))
+y_list1 = []  
+for y in y_list:
+
+    yn = re.sub(r'\n\s*\n', '\n\n', y)
+    y_list1.append(yn)
+    
+data_tuples = list(zip(x_list1,y_list1,score))
 
 results = pd.DataFrame(data_tuples, columns=['X','Y', 'Score'])  
+
 results = results.sort_values(by=['Score'], ascending=False)
-results = results[results['Score'] > 70]
+results = results[results['Score'] > 60]
 
 x_list3 = list(results['X'])
 y_list3 = list(results['Y'])
+        
+    
+# uncommon words
 
 diffs = []
 
@@ -175,6 +148,3 @@ while n <= len(resultsXlist) - 1:
     print( "\n")
     
     n = n+1
-
-
-# In[ ]:
